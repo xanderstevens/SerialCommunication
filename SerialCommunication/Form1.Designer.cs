@@ -28,7 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.serialPortArduino = new System.IO.Ports.SerialPort(this.components);
             this.radioButtonVerbonden = new System.Windows.Forms.RadioButton();
+            this.serialPortArduino.ReadTimeout = 1000;
+            this.serialPortArduino.WriteTimeout = 1000;
             this.buttonConnect = new System.Windows.Forms.Button();
             this.labelPoort = new System.Windows.Forms.Label();
             this.comboBoxPoort = new System.Windows.Forms.ComboBox();
@@ -973,6 +977,7 @@
         internal System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
+        private System.IO.Ports.SerialPort serialPortArduino;
     }
 }
 
