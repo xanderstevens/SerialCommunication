@@ -63,6 +63,9 @@ namespace SerialCommunication
                     radioButtonVerbonden.Checked = false;
                     buttonConnect.Text = "Connect";
                     labelStatus.Text = "Status: Disconnected";
+
+                    // STOP de algemene verbindingsmonitor
+                    timerVerbindingMonitor.Enabled = false;
                 }
                 else
                 {
@@ -76,7 +79,7 @@ namespace SerialCommunication
                     else if (radioButtonParityNone.Checked) serialPortArduino.Parity = Parity.None;
                     else if (radioButtonParityMark.Checked) serialPortArduino.Parity = Parity.Mark;
                     else if (radioButtonParitySpace.Checked) serialPortArduino.Parity = Parity.Space;
-                    
+
                     if (radioButtonStopbitsNone.Checked) serialPortArduino.StopBits = StopBits.None;
                     else if (radioButtonStopbitsOne.Checked) serialPortArduino.StopBits = StopBits.One;
                     else if (radioButtonStopbitsOnePointFive.Checked) serialPortArduino.StopBits = StopBits.OnePointFive;
@@ -95,25 +98,30 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
                     string antwoord = serialPortArduino.ReadLine();
                     antwoord = antwoord.TrimEnd();
+
                     if (antwoord == "pong")
                     {
                         radioButtonVerbonden.Checked = true;
                         buttonConnect.Text = "Disconnect";
                         labelStatus.Text = "Connected";
+
+                        // START de algemene verbindingsmonitor
+                        timerVerbindingMonitor.Enabled = true;
                     }
                     else
                     {
                         serialPortArduino.Close();
                         labelStatus.Text = "Error: verkeerd antwoord";
                     }
-                }   
+                }
             }
             catch (Exception exception)
             {
                 labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close() ;
+                serialPortArduino.Close();
                 radioButtonVerbonden.Checked = false;
                 buttonConnect.Text = "Connect";
+                timerVerbindingMonitor.Enabled = false;
             }
         }
 
@@ -131,10 +139,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -152,10 +157,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -173,10 +175,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -192,10 +191,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -211,10 +207,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -230,10 +223,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -241,6 +231,7 @@ namespace SerialCommunication
         {
             timerOefening3.Enabled = tabControl.SelectedIndex == 3;
             timerOefening4.Enabled = tabControl.SelectedIndex == 4;
+            timerOefening5.Enabled = tabControl.SelectedIndex == 5;
         }
 
         private void timerOefening3_Tick(object sender, EventArgs e)
@@ -257,27 +248,28 @@ namespace SerialCommunication
                     antwoord = antwoord.Substring(4);
                     radioButtonDigital5.Checked = (antwoord == "1");
 
-                    commando = "get d6"; 
+                    commando = "get d6";
                     serialPortArduino.WriteLine(commando);
                     antwoord = serialPortArduino.ReadLine();
                     antwoord = antwoord.TrimEnd();
-                    antwoord = antwoord.Substring(4);   
+                    antwoord = antwoord.Substring(4);
                     radioButtonDigital6.Checked = (antwoord == "1");
 
                     commando = "get d7";
                     serialPortArduino.WriteLine(commando);
                     antwoord = serialPortArduino.ReadLine();
-                    antwoord = antwoord.TrimEnd(); 
+                    antwoord = antwoord.TrimEnd();
                     antwoord = antwoord.Substring(4);
                     radioButtonDigital7.Checked = (antwoord == "1");
+                }
+                else
+                {
+                    AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
                 }
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
         }
 
@@ -296,14 +288,85 @@ namespace SerialCommunication
                     int value = Int32.Parse(antwoord);
                     labelAnalog0.Text = value.ToString();
                 }
+                else
+                {
+                    AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
+                }
             }
-             catch (Exception exception)
+            catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
             }
+        }
+
+        private void timerOefening5_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    // 1. Wis oude buffer
+                    serialPortArduino.ReadExisting();
+
+                    // 2. Lees en herschaal potentiometer (Gewenste Temperatuur)
+                    serialPortArduino.WriteLine("get a0");
+                    string antwoordA0 = serialPortArduino.ReadLine().TrimEnd();
+                    int analog0 = Int32.Parse(antwoordA0.Substring(4));
+                    double gewensteTemp = (40.0 / 1023.0) * analog0 + 5.0;
+                    labelGewensteTemp.Text = gewensteTemp.ToString("0.0") + " °C";
+
+                    // 3. Lees en herschaal LM35 (Huidige Temperatuur)
+                    serialPortArduino.WriteLine("get a1");
+                    string antwoordA1 = serialPortArduino.ReadLine().TrimEnd();
+                    int analog1 = Int32.Parse(antwoordA1.Substring(4));
+                    double huidigeTemp = (500.0 / 1023.0) * analog1;
+                    labelHuidigeTemp.Text = huidigeTemp.ToString("0.0") + " °C";
+
+                    // 4. Stuur de LED aan op basis van de temperaturen
+                    if (huidigeTemp < gewensteTemp)
+                    {
+                        serialPortArduino.WriteLine("set d2 high"); // Te koud -> Verwarming/LED AAN
+                    }
+                    else
+                    {
+                        serialPortArduino.WriteLine("set d2 low");  // Warm genoeg -> Verwarming/LED UIT
+                    }
+                }
+                else
+                {
+                    AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
+                }
+            }
+            catch (Exception exception)
+            {
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
+            }
+        }
+
+        // --- DE NIEUWE ACHTERGROND MONITOR ---
+        private void timerVerbindingMonitor_Tick(object sender, EventArgs e)
+        {
+            if (radioButtonVerbonden.Checked && !serialPortArduino.IsOpen)
+            {
+                AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
+            }
+        }
+        private void AfhandelenVerbrokenVerbinding(string foutmelding)
+        {
+            timerOefening3.Enabled = false;
+            timerOefening4.Enabled = false;
+            timerOefening5.Enabled = false;
+
+            timerVerbindingMonitor.Enabled = false;
+
+            if (serialPortArduino.IsOpen)
+            {
+                serialPortArduino.Close();
+            }
+
+            labelStatus.Text = foutmelding;
+            radioButtonVerbonden.Checked = false;
+            buttonConnect.Text = "Connect";
         }
     }
 }

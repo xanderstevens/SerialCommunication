@@ -92,6 +92,8 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
+            this.timerVerbindingMonitor = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -890,6 +892,16 @@
             this.timerOefening4.Interval = 1000;
             this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
             // 
+            // timerOefening5
+            // 
+            this.timerOefening5.Interval = 1000;
+            this.timerOefening5.Tick += new System.EventHandler(this.timerOefening5_Tick);
+            // 
+            // timerVerbindingMonitor
+            // 
+            this.timerVerbindingMonitor.Interval = 1000;
+            this.timerVerbindingMonitor.Tick += new System.EventHandler(this.timerVerbindingMonitor_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1004,6 +1016,8 @@
         private System.IO.Ports.SerialPort serialPortArduino;
         private System.Windows.Forms.Timer timerOefening3;
         private System.Windows.Forms.Timer timerOefening4;
+        private System.Windows.Forms.Timer timerOefening5;
+        private System.Windows.Forms.Timer timerVerbindingMonitor;
     }
 }
 
