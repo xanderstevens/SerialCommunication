@@ -14,6 +14,10 @@ namespace SerialCommunication
 {
     public partial class Form1 : Form
     {
+        // --- Globale variabelen voor Oefening 6 (Toestandsmachine) ---
+        enum AlarmToestand { OK, ALARM, BEVESTIGD }
+        AlarmToestand huidigeToestand = AlarmToestand.OK;
+
         public Form1()
         {
             InitializeComponent();
@@ -232,6 +236,10 @@ namespace SerialCommunication
             timerOefening3.Enabled = tabControl.SelectedIndex == 3;
             timerOefening4.Enabled = tabControl.SelectedIndex == 4;
             timerOefening5.Enabled = tabControl.SelectedIndex == 5;
+
+            // Controleer of jouw Oefening 6 daadwerkelijk index 6 heeft. 
+            // Als Oefening 6 het 6e tabblad is i.p.v. 7e, zet dit dan op == 5.
+            timerOefening6.Enabled = tabControl.SelectedIndex == 6;
         }
 
         private void timerOefening3_Tick(object sender, EventArgs e)
@@ -343,7 +351,102 @@ namespace SerialCommunication
             }
         }
 
-        // --- DE NIEUWE ACHTERGROND MONITOR ---
+        // --- OEFENING 6: Temperatuur Alarm ---
+        private void timerOefening6_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    // 1. Wis oude buffer
+                    serialPortArduino.ReadExisting();
+
+                    // 2. Lees en herschaal Potentiometer (A0 - Alarm Drempel)
+                    // Range: -10°C tot +60°C (bereik van 70 graden)
+                    serialPortArduino.WriteLine("get a0");
+                    string antwoordA0 = serialPortArduino.ReadLine().TrimEnd();
+                    int analog0 = Int32.Parse(antwoordA0.Substring(4));
+                    double alarmTemp = (70.0 / 1023.0) * analog0 - 10.0;
+                    labelOef6AlarmTemp.Text = alarmTemp.ToString("0.0") + " °C";
+
+                    // 3. Lees en herschaal LM35 (A1 - Huidige Temperatuur)
+                    serialPortArduino.WriteLine("get a1");
+                    string antwoordA1 = serialPortArduino.ReadLine().TrimEnd();
+                    int analog1 = Int32.Parse(antwoordA1.Substring(4));
+                    double huidigeTemp = (500.0 / 1023.0) * analog1; // Datasheet LM35 (bij 5V)
+                    labelOef6HuidigeTemp.Text = huidigeTemp.ToString("0.0") + " °C";
+
+                    // 4. Lees de drukknop uit (D5 - Bevestigingsknop)
+                    serialPortArduino.WriteLine("get d5");
+                    string antwoordD5 = serialPortArduino.ReadLine().TrimEnd();
+                    bool knopIngedrukt = (antwoordD5.Substring(4) == "1"); // Pas aan naar == "0" indien pull-up wordt gebruikt
+
+                    // 5. TOESTANDSMACHINE LOGICA
+                    switch (huidigeToestand)
+                    {
+                        case AlarmToestand.OK:
+                            if (huidigeTemp > alarmTemp)
+                            {
+                                huidigeToestand = AlarmToestand.ALARM;
+                            }
+                            break;
+
+                        case AlarmToestand.ALARM:
+                            if (knopIngedrukt)
+                            {
+                                if (huidigeTemp < alarmTemp)
+                                {
+                                    // Als de temperatuur alweer gedaald was, ga direct naar OK
+                                    huidigeToestand = AlarmToestand.OK;
+                                }
+                                else
+                                {
+                                    // Als het nog steeds te warm is, ga naar BEVESTIGD
+                                    huidigeToestand = AlarmToestand.BEVESTIGD;
+                                }
+                            }
+                            break;
+
+                        case AlarmToestand.BEVESTIGD:
+                            if (huidigeTemp < alarmTemp)
+                            {
+                                // Temperatuur is eindelijk onder het alarm gezakt
+                                huidigeToestand = AlarmToestand.OK;
+                            }
+                            break;
+                    }
+
+                    // 6. STUUR HARDWARE AAN EN UPDATE UI OP BASIS VAN DE TOESTAND
+                    labelOef6Toestand.Text = huidigeToestand.ToString();
+
+                    if (huidigeToestand == AlarmToestand.OK)
+                    {
+                        serialPortArduino.WriteLine("set d2 low");  // LED UIT
+                        serialPortArduino.WriteLine("set d3 low");  // Buzzer UIT
+                    }
+                    else if (huidigeToestand == AlarmToestand.ALARM)
+                    {
+                        serialPortArduino.WriteLine("set d2 high"); // LED AAN
+                        serialPortArduino.WriteLine("set d3 high"); // Buzzer AAN
+                    }
+                    else if (huidigeToestand == AlarmToestand.BEVESTIGD)
+                    {
+                        serialPortArduino.WriteLine("set d2 high"); // LED AAN
+                        serialPortArduino.WriteLine("set d3 low");  // Buzzer UIT
+                    }
+                }
+                else
+                {
+                    AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
+                }
+            }
+            catch (Exception exception)
+            {
+                AfhandelenVerbrokenVerbinding("Error: " + exception.Message);
+            }
+        }
+
+        // --- DE ACHTERGROND MONITOR ---
         private void timerVerbindingMonitor_Tick(object sender, EventArgs e)
         {
             if (radioButtonVerbonden.Checked && !serialPortArduino.IsOpen)
@@ -351,11 +454,13 @@ namespace SerialCommunication
                 AfhandelenVerbrokenVerbinding("Status: Verbinding verbroken (kabel ontkoppeld)");
             }
         }
+
         private void AfhandelenVerbrokenVerbinding(string foutmelding)
         {
             timerOefening3.Enabled = false;
             timerOefening4.Enabled = false;
             timerOefening5.Enabled = false;
+            timerOefening6.Enabled = false; // Zorg dat de nieuwe timer ook stopt
 
             timerVerbindingMonitor.Enabled = false;
 

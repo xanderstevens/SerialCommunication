@@ -88,12 +88,20 @@
             this.labelGewensteTemp = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.tabPageOefening6 = new System.Windows.Forms.TabPage();
+            this.labelOef6Toestand = new System.Windows.Forms.Label();
+            this.labelOef6HuidigeTemp = new System.Windows.Forms.Label();
+            this.labelOef6AlarmTemp = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.labelHuidigeTemperatuur = new System.Windows.Forms.Label();
+            this.labelAlarmTemperatuur = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
             this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
             this.timerVerbindingMonitor = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening6 = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -113,6 +121,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.tabPageOefening5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            this.tabPageOefening6.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -180,12 +189,13 @@
             this.tabControl.Controls.Add(this.tabPageOefening3);
             this.tabControl.Controls.Add(this.tabPageOefening4);
             this.tabControl.Controls.Add(this.tabPageOefening5);
+            this.tabControl.Controls.Add(this.tabPageOefening6);
             this.tabControl.Location = new System.Drawing.Point(16, 70);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1045, 513);
-            this.tabControl.TabIndex = 9;
+            this.tabControl.TabIndex = 6;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPageInstellingen
@@ -865,6 +875,76 @@
             this.pictureBox5.TabIndex = 0;
             this.pictureBox5.TabStop = false;
             // 
+            // tabPageOefening6
+            // 
+            this.tabPageOefening6.Controls.Add(this.labelOef6Toestand);
+            this.tabPageOefening6.Controls.Add(this.labelOef6HuidigeTemp);
+            this.tabPageOefening6.Controls.Add(this.labelOef6AlarmTemp);
+            this.tabPageOefening6.Controls.Add(this.label13);
+            this.tabPageOefening6.Controls.Add(this.labelHuidigeTemperatuur);
+            this.tabPageOefening6.Controls.Add(this.labelAlarmTemperatuur);
+            this.tabPageOefening6.Location = new System.Drawing.Point(4, 25);
+            this.tabPageOefening6.Name = "tabPageOefening6";
+            this.tabPageOefening6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageOefening6.Size = new System.Drawing.Size(1037, 484);
+            this.tabPageOefening6.TabIndex = 6;
+            this.tabPageOefening6.Text = "Oefening 6";
+            this.tabPageOefening6.UseVisualStyleBackColor = true;
+            // 
+            // labelOef6Toestand
+            // 
+            this.labelOef6Toestand.AutoSize = true;
+            this.labelOef6Toestand.Location = new System.Drawing.Point(205, 151);
+            this.labelOef6Toestand.Name = "labelOef6Toestand";
+            this.labelOef6Toestand.Size = new System.Drawing.Size(25, 16);
+            this.labelOef6Toestand.TabIndex = 5;
+            this.labelOef6Toestand.Text = "OK";
+            // 
+            // labelOef6HuidigeTemp
+            // 
+            this.labelOef6HuidigeTemp.AutoSize = true;
+            this.labelOef6HuidigeTemp.Location = new System.Drawing.Point(205, 113);
+            this.labelOef6HuidigeTemp.Name = "labelOef6HuidigeTemp";
+            this.labelOef6HuidigeTemp.Size = new System.Drawing.Size(40, 16);
+            this.labelOef6HuidigeTemp.TabIndex = 4;
+            this.labelOef6HuidigeTemp.Text = "0.0 °C";
+            // 
+            // labelOef6AlarmTemp
+            // 
+            this.labelOef6AlarmTemp.AutoSize = true;
+            this.labelOef6AlarmTemp.Location = new System.Drawing.Point(205, 78);
+            this.labelOef6AlarmTemp.Name = "labelOef6AlarmTemp";
+            this.labelOef6AlarmTemp.Size = new System.Drawing.Size(40, 16);
+            this.labelOef6AlarmTemp.TabIndex = 3;
+            this.labelOef6AlarmTemp.Text = "0.0 °C";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(24, 151);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(44, 16);
+            this.label13.TabIndex = 2;
+            this.label13.Text = "Status";
+            // 
+            // labelHuidigeTemperatuur
+            // 
+            this.labelHuidigeTemperatuur.AutoSize = true;
+            this.labelHuidigeTemperatuur.Location = new System.Drawing.Point(24, 113);
+            this.labelHuidigeTemperatuur.Name = "labelHuidigeTemperatuur";
+            this.labelHuidigeTemperatuur.Size = new System.Drawing.Size(134, 16);
+            this.labelHuidigeTemperatuur.TabIndex = 1;
+            this.labelHuidigeTemperatuur.Text = "Huidige Temperatuur";
+            // 
+            // labelAlarmTemperatuur
+            // 
+            this.labelAlarmTemperatuur.AutoSize = true;
+            this.labelAlarmTemperatuur.Location = new System.Drawing.Point(24, 78);
+            this.labelAlarmTemperatuur.Name = "labelAlarmTemperatuur";
+            this.labelAlarmTemperatuur.Size = new System.Drawing.Size(122, 16);
+            this.labelAlarmTemperatuur.TabIndex = 0;
+            this.labelAlarmTemperatuur.Text = "Alarm Temperatuur";
+            // 
             // statusStrip
             // 
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -901,6 +981,11 @@
             // 
             this.timerVerbindingMonitor.Interval = 1000;
             this.timerVerbindingMonitor.Tick += new System.EventHandler(this.timerVerbindingMonitor_Tick);
+            // 
+            // timerOefening6
+            // 
+            this.timerOefening6.Interval = 200;
+            this.timerOefening6.Tick += new System.EventHandler(this.timerOefening6_Tick);
             // 
             // Form1
             // 
@@ -944,6 +1029,8 @@
             this.tabPageOefening5.ResumeLayout(false);
             this.tabPageOefening5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            this.tabPageOefening6.ResumeLayout(false);
+            this.tabPageOefening6.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -1018,6 +1105,14 @@
         private System.Windows.Forms.Timer timerOefening4;
         private System.Windows.Forms.Timer timerOefening5;
         private System.Windows.Forms.Timer timerVerbindingMonitor;
+        private System.Windows.Forms.TabPage tabPageOefening6;
+        private System.Windows.Forms.Label labelOef6Toestand;
+        private System.Windows.Forms.Label labelOef6HuidigeTemp;
+        private System.Windows.Forms.Label labelOef6AlarmTemp;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label labelHuidigeTemperatuur;
+        private System.Windows.Forms.Label labelAlarmTemperatuur;
+        private System.Windows.Forms.Timer timerOefening6;
     }
 }
 
